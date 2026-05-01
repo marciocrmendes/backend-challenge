@@ -11,5 +11,6 @@ public static class DependencyResolver
         new DomainModuleInitializer().Initialize(builder);
         new InfrastructureModuleInitializer().Initialize(builder);
         new WebApiModuleInitializer().Initialize(builder);
+        new MessagingModuleInitializer().Initialize(builder);
     }
 }

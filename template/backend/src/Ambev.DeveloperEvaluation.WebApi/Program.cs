@@ -5,6 +5,7 @@ using Ambev.DeveloperEvaluation.Common.Security;
 using Ambev.DeveloperEvaluation.Common.Validation;
 using Ambev.DeveloperEvaluation.IoC;
 using Ambev.DeveloperEvaluation.ORM;
+using Ambev.DeveloperEvaluation.ORM.Interceptors;
 using Ambev.DeveloperEvaluation.WebApi.Authorization;
 using Ambev.DeveloperEvaluation.WebApi.Middleware;
 using FluentValidation;
@@ -58,11 +59,14 @@ public class Program
                 });
             });
 
-            builder.Services.AddDbContext<DefaultContext>(options =>
+            builder.Services.AddScoped<DomainEventInterceptor>();
+
+            builder.Services.AddDbContext<DefaultContext>((sp, options) =>
                 options.UseNpgsql(
                     builder.Configuration.GetConnectionString("DefaultConnection"),
                     b => b.MigrationsAssembly("Ambev.DeveloperEvaluation.ORM")
                 )
+                .AddInterceptors(sp.GetRequiredService<DomainEventInterceptor>())
             );
 
             builder.Services.AddJwtAuthentication(builder.Configuration);
