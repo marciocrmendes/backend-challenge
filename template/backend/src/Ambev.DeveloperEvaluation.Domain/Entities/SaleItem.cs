@@ -59,6 +59,14 @@ public class SaleItem : BaseEntity
         CalculateTotalAmount();
     }
 
+    public void UpdateUnitPrice(Money newUnitPrice)
+    {
+        ArgumentNullException.ThrowIfNull(newUnitPrice);
+
+        UnitPrice = newUnitPrice;
+        CalculateTotalAmount();
+    }
+
     public void UpdateDiscount(Money newDiscount)
     {
         ArgumentNullException.ThrowIfNull(newDiscount);

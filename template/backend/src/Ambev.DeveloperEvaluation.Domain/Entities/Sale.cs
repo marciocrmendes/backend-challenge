@@ -67,6 +67,7 @@ public class Sale : AgreggateRoot
 
         var item = GetItemOrThrow(itemId);
         var newDiscount = CalculateDiscount(newQuantity, newUnitPrice);
+        item.UpdateUnitPrice(newUnitPrice);
         item.UpdateQuantity(newQuantity);
         item.UpdateDiscount(newDiscount);
         RecalculateTotal();
