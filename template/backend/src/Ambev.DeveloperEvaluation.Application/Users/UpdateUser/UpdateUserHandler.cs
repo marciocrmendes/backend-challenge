@@ -1,5 +1,4 @@
 using AutoMapper;
-using FluentValidation;
 using MediatR;
 using Ambev.DeveloperEvaluation.Common.Security;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
@@ -21,11 +20,6 @@ public class UpdateUserHandler : IRequestHandler<UpdateUserCommand, UpdateUserRe
 
     public async Task<UpdateUserResult> Handle(UpdateUserCommand command, CancellationToken cancellationToken)
     {
-        var validator = new UpdateUserValidator();
-        var validationResult = await validator.ValidateAsync(command, cancellationToken);
-        if (!validationResult.IsValid)
-            throw new ValidationException(validationResult.Errors);
-
         var user = await _userRepository.GetByIdAsync(command.Id, cancellationToken);
         if (user == null)
             throw new KeyNotFoundException($"User with ID {command.Id} not found");
