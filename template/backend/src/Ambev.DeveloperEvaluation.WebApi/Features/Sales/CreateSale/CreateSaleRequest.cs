@@ -2,8 +2,8 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Sales.CreateSale
 {
     public class CreateSaleRequest
     {
-        public Guid CustomerId { get; set; }
-        public string CustomerName { get; set; } = string.Empty;
+        public Guid? CustomerId { get; set; }
+        public string? CustomerName { get; set; }
         public Guid BranchId { get; set; }
         public string BranchName { get; set; } = string.Empty;
         public List<CreateSaleItemRequest> Items { get; set; } = [];

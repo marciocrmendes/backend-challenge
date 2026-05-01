@@ -18,7 +18,7 @@ public class UpdateUserHandler : IRequestHandler<UpdateUserCommand, UpdateUserRe
         _passwordHasher = passwordHasher;
     }
 
-    public async Task<UpdateUserResult> Handle(UpdateUserCommand command, CancellationToken cancellationToken)
+    public async Task<UpdateUserResult> Handle(UpdateUserCommand command, CancellationToken cancellationToken = default)
     {
         var user = await _userRepository.GetByIdAsync(command.Id, cancellationToken);
         if (user == null)

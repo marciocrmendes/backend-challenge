@@ -23,7 +23,7 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.CreateSale
             _logger = logger;
         }
 
-        public async Task<CreateSaleResult> Handle(CreateSaleCommand command, CancellationToken cancellationToken)
+        public async Task<CreateSaleResult> Handle(CreateSaleCommand command, CancellationToken cancellationToken = default)
         {
             var sale = new Sale(DateTime.UtcNow,
                 command.CustomerId,

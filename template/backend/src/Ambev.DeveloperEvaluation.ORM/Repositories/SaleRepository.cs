@@ -28,12 +28,15 @@ namespace Ambev.DeveloperEvaluation.ORM.Repositories
         }
 
         public async Task<(IEnumerable<Sale> Items, int TotalCount)> GetAllAsync(
-            int page, int pageSize, CancellationToken cancellationToken = default)
+            int page, int pageSize, Guid? customerId = null, CancellationToken cancellationToken = default)
         {
             var query = _context.Sales
                 .Include(s => s.Items)
                 .OrderByDescending(s => s.SaleDate)
                 .AsQueryable();
+
+            if (customerId.HasValue)
+                query = query.Where(s => s.CustomerId == customerId.Value);
 
             var totalCount = await query.CountAsync(cancellationToken);
             var items = await query

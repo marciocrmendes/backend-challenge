@@ -16,7 +16,7 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.CancelSaleItem
             _logger = logger;
         }
 
-        public async Task<CancelSaleItemResult> Handle(CancelSaleItemCommand command, CancellationToken cancellationToken)
+        public async Task<CancelSaleItemResult> Handle(CancelSaleItemCommand command, CancellationToken cancellationToken = default)
         {
             var sale = await _saleRepository.GetByIdAsync(command.SaleId, cancellationToken) ??
                 throw new KeyNotFoundException($"Sale with ID {command.SaleId} not found.");

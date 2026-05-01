@@ -27,7 +27,7 @@ public class DeleteUserHandler : IRequestHandler<DeleteUserCommand, DeleteUserRe
     /// <param name="request">The DeleteUser command</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>The result of the delete operation</returns>
-    public async Task<DeleteUserResponse> Handle(DeleteUserCommand request, CancellationToken cancellationToken)
+    public async Task<DeleteUserResponse> Handle(DeleteUserCommand request, CancellationToken cancellationToken = default)
     {
         var success = await _userRepository.DeleteAsync(request.Id, cancellationToken);
         if (!success)

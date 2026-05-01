@@ -32,7 +32,7 @@ public class GetUserHandler : IRequestHandler<GetUserCommand, GetUserResult>
     /// <param name="request">The GetUser command</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>The user details if found</returns>
-    public async Task<GetUserResult> Handle(GetUserCommand request, CancellationToken cancellationToken)
+    public async Task<GetUserResult> Handle(GetUserCommand request, CancellationToken cancellationToken = default)
     {
         var user = await _userRepository.GetByIdAsync(request.Id, cancellationToken);
         if (user == null)

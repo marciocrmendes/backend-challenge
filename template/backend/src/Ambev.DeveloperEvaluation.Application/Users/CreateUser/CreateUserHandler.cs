@@ -34,7 +34,7 @@ public class CreateUserHandler : IRequestHandler<CreateUserCommand, CreateUserRe
     /// <param name="command">The CreateUser command</param>
     /// <param name="cancellationToken">Cancellation token</param>
     /// <returns>The created user details</returns>
-    public async Task<CreateUserResult> Handle(CreateUserCommand command, CancellationToken cancellationToken)
+    public async Task<CreateUserResult> Handle(CreateUserCommand command, CancellationToken cancellationToken = default)
     {
         var existingUser = await _userRepository.GetByEmailAsync(command.Email, cancellationToken);
         if (existingUser != null)

@@ -15,7 +15,7 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.GetSale
             _mapper = mapper;
         }
 
-        public async Task<GetSaleResult> Handle(GetSaleQuery query, CancellationToken cancellationToken)
+        public async Task<GetSaleResult> Handle(GetSaleQuery query, CancellationToken cancellationToken = default)
         {
             var sale = await _saleRepository.GetByIdAsync(query.Id, cancellationToken);
             if (sale is null)

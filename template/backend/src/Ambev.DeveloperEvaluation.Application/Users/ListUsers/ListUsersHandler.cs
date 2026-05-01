@@ -1,10 +1,9 @@
 using Ambev.DeveloperEvaluation.Application.Users.GetUser;
-using Ambev.DeveloperEvaluation.Application.Users.ListUsers;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
 using AutoMapper;
 using MediatR;
 
-namespace Ambev.DeveloperEvaluation.Application.Users.GetAllUsers;
+namespace Ambev.DeveloperEvaluation.Application.Users.ListUsers;
 
 public class ListUsersHandler : IRequestHandler<ListUsersQuery, ListUsersResult>
 {
@@ -17,7 +16,7 @@ public class ListUsersHandler : IRequestHandler<ListUsersQuery, ListUsersResult>
         _mapper = mapper;
     }
 
-    public async Task<ListUsersResult> Handle(ListUsersQuery request, CancellationToken cancellationToken)
+    public async Task<ListUsersResult> Handle(ListUsersQuery request, CancellationToken cancellationToken = default)
     {
         var (items, totalCount) = await _userRepository.GetAllAsync(request.Page, request.PageSize, cancellationToken);
 

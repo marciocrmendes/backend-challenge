@@ -20,7 +20,7 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.UpdateSale
             _logger = logger;
         }
 
-        public async Task<UpdateSaleResult> Handle(UpdateSaleCommand command, CancellationToken cancellationToken)
+        public async Task<UpdateSaleResult> Handle(UpdateSaleCommand command, CancellationToken cancellationToken = default)
         {
             var sale = await _saleRepository.GetByIdAsync(command.Id, cancellationToken);
             if (sale is null)

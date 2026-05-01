@@ -16,7 +16,7 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.CancelSale
             _logger = logger;
         }
 
-        public async Task<CancelSaleResult> Handle(CancelSaleCommand command, CancellationToken cancellationToken)
+        public async Task<CancelSaleResult> Handle(CancelSaleCommand command, CancellationToken cancellationToken = default)
         {
             var sale = await _saleRepository.GetByIdAsync(command.Id, cancellationToken);
             if (sale is null)
