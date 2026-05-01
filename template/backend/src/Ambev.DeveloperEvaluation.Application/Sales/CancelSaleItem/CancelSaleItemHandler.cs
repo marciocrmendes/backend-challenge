@@ -1,4 +1,5 @@
 using Ambev.DeveloperEvaluation.Domain.Repositories;
+using Ambev.DeveloperEvaluation.Domain.Specifications.Sales;
 using MediatR;
 
 namespace Ambev.DeveloperEvaluation.Application.Sales.CancelSaleItem;
@@ -17,7 +18,8 @@ public class CancelSaleItemHandler : IRequestHandler<CancelSaleItemCommand, Canc
         var sale = await _saleRepository.GetByIdAsync(command.SaleId, cancellationToken) ??
             throw new KeyNotFoundException($"Sale with ID {command.SaleId} not found.");
 
-        if (sale.IsCancelled)
+        var editableSpec = new SaleNotCancelledSpecification();
+        if (!editableSpec.IsSatisfiedBy(sale))
             throw new DomainException("Cannot cancel an item on a cancelled sale.");
 
         sale.CancelItem(command.ItemId);

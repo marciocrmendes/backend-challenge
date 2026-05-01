@@ -1,4 +1,5 @@
 using Ambev.DeveloperEvaluation.Domain.Repositories;
+using Ambev.DeveloperEvaluation.Domain.Specifications.Sales;
 using Ambev.DeveloperEvaluation.Domain.ValueObjects;
 using AutoMapper;
 using MediatR;
@@ -21,7 +22,8 @@ public class UpdateSaleHandler : IRequestHandler<UpdateSaleCommand, UpdateSaleRe
         var sale = await _saleRepository.GetByIdAsync(command.Id, cancellationToken);
         if (sale is null)
             throw new KeyNotFoundException($"Sale with ID {command.Id} not found.");
-        if (sale.IsCancelled)
+        var editableSpec = new SaleNotCancelledSpecification();
+        if (!editableSpec.IsSatisfiedBy(sale))
             throw new DomainException("Cannot update a cancelled sale.");
 
         sale.UpdateHeader(
