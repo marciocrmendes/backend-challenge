@@ -5,42 +5,41 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-namespace Ambev.DeveloperEvaluation.Common.Security
+namespace Ambev.DeveloperEvaluation.Common.Security;
+
+public static class AuthenticationExtension
 {
-    public static class AuthenticationExtension
+    public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
     {
-        public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
+        var jwtSettings = configuration.GetSection(JwtSettings.SectionName).Get<JwtSettings>()
+            ?? throw new InvalidOperationException("JWT settings section is not configured.");
+
+        ArgumentException.ThrowIfNullOrWhiteSpace(jwtSettings.SecretKey);
+
+        services.Configure<JwtSettings>(configuration.GetSection(JwtSettings.SectionName));
+        services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+
+        var key = Encoding.ASCII.GetBytes(jwtSettings.SecretKey);
+
+        services.AddAuthentication(x =>
         {
-            var jwtSettings = configuration.GetSection(JwtSettings.SectionName).Get<JwtSettings>()
-                ?? throw new InvalidOperationException("JWT settings section is not configured.");
-
-            ArgumentException.ThrowIfNullOrWhiteSpace(jwtSettings.SecretKey);
-
-            services.Configure<JwtSettings>(configuration.GetSection(JwtSettings.SectionName));
-            services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
-
-            var key = Encoding.ASCII.GetBytes(jwtSettings.SecretKey);
-
-            services.AddAuthentication(x =>
+            x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(x =>
+        {
+            x.RequireHttpsMetadata = false;
+            x.SaveToken = true;
+            x.TokenValidationParameters = new TokenValidationParameters
             {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(x =>
-            {
-                x.RequireHttpsMetadata = false;
-                x.SaveToken = true;
-                x.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    ClockSkew = TimeSpan.Zero
-                };
-            });
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ClockSkew = TimeSpan.Zero
+            };
+        });
 
-            return services;
-        }
+        return services;
     }
 }

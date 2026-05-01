@@ -1,7 +1,6 @@
-namespace Ambev.DeveloperEvaluation.Application.Sales.CancelSale
+namespace Ambev.DeveloperEvaluation.Application.Sales.CancelSale;
+
+public class CancelSaleResult
 {
-    public class CancelSaleResult
-    {
-        public bool Success { get; set; }
-    }
+    public bool Success { get; set; }
 }

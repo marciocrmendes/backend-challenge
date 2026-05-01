@@ -1,12 +1,11 @@
 using FluentValidation;
 
-namespace Ambev.DeveloperEvaluation.Application.Sales.GetSale
+namespace Ambev.DeveloperEvaluation.Application.Sales.GetSale;
+
+public class GetSaleQueryValidator : AbstractValidator<GetSaleQuery>
 {
-    public class GetSaleQueryValidator : AbstractValidator<GetSaleQuery>
+    public GetSaleQueryValidator()
     {
-        public GetSaleQueryValidator()
-        {
-            RuleFor(q => q.Id).NotEmpty();
-        }
+        RuleFor(q => q.Id).NotEmpty();
     }
 }

@@ -1,7 +1,6 @@
-namespace Ambev.DeveloperEvaluation.Common.Security
+namespace Ambev.DeveloperEvaluation.Common.Security;
+
+public interface IJwtTokenGenerator
 {
-    public interface IJwtTokenGenerator
-    {
-        string GenerateToken(IUser user);
-    }
+    string GenerateToken(IUser user);
 }

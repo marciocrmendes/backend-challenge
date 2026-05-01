@@ -1,8 +1,6 @@
 using Ambev.DeveloperEvaluation.Domain.Enums;
-using Ambev.DeveloperEvaluation.Domain.Services;
 using Ambev.DeveloperEvaluation.WebApi.Authorization.Handlers;
 using Ambev.DeveloperEvaluation.WebApi.Authorization.Requirements;
-
 using Microsoft.AspNetCore.Authorization;
 
 namespace Ambev.DeveloperEvaluation.WebApi.Authorization;
@@ -30,9 +28,6 @@ public static class AuthorizationPoliciesExtension
                 policy.RequireRole(UserRole.Admin.ToString()));
 
         services.AddSingleton<IAuthorizationHandler, SaleOwnerAuthorizationHandler>();
-
-        services.AddHttpContextAccessor();
-        services.AddScoped<ICurrentUserService, CurrentUserService>();
 
         return services;
     }

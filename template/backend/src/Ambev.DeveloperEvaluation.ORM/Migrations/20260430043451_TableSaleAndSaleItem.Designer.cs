@@ -9,293 +9,292 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Ambev.DeveloperEvaluation.ORM.Migrations
+namespace Ambev.DeveloperEvaluation.ORM.Migrations;
+
+[DbContext(typeof(DefaultContext))]
+[Migration("20260430043451_TableSaleAndSaleItem")]
+partial class TableSaleAndSaleItem
 {
-    [DbContext(typeof(DefaultContext))]
-    [Migration("20260430043451_TableSaleAndSaleItem")]
-    partial class TableSaleAndSaleItem
+    /// <inheritdoc />
+    protected override void BuildTargetModel(ModelBuilder modelBuilder)
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
-        {
 #pragma warning disable 612, 618
-            modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.10")
-                .HasAnnotation("Relational:MaxIdentifierLength", 63);
+        modelBuilder
+            .HasAnnotation("ProductVersion", "8.0.10")
+            .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("Ambev.DeveloperEvaluation.Domain.Entities.Sale", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("gen_random_uuid()");
+        NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+        modelBuilder.Entity("Ambev.DeveloperEvaluation.Domain.Entities.Sale", b =>
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("uuid")
+                    .HasDefaultValueSql("gen_random_uuid()");
 
-                    b.Property<Guid>("BranchId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("BranchName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                b.Property<Guid>("BranchId")
+                    .HasColumnType("uuid");
+
+                b.Property<string>("BranchName")
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .HasColumnType("character varying(100)");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid>("CustomerId")
-                        .HasColumnType("uuid");
+                b.Property<DateTime>("CreatedAt")
+                    .HasColumnType("timestamp with time zone");
+
+                b.Property<Guid>("CustomerId")
+                    .HasColumnType("uuid");
 
-                    b.Property<string>("CustomerName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                b.Property<string>("CustomerName")
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .HasColumnType("character varying(100)");
 
-                    b.Property<bool>("IsCancelled")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(false);
-
-                    b.Property<DateTime>("SaleDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Sales", (string)null);
-                });
-
-            modelBuilder.Entity("Ambev.DeveloperEvaluation.Domain.Entities.SaleItem", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("gen_random_uuid()");
-
-                    b.Property<bool>("IsCancelled")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(false);
-
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("ProductName")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("character varying(200)");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("integer");
-
-                    b.Property<Guid>("SaleId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
+                b.Property<bool>("IsCancelled")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("boolean")
+                    .HasDefaultValue(false);
+
+                b.Property<DateTime>("SaleDate")
+                    .HasColumnType("timestamp with time zone");
+
+                b.Property<DateTime?>("UpdatedAt")
+                    .HasColumnType("timestamp with time zone");
+
+                b.HasKey("Id");
+
+                b.ToTable("Sales", (string)null);
+            });
+
+        modelBuilder.Entity("Ambev.DeveloperEvaluation.Domain.Entities.SaleItem", b =>
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("uuid")
+                    .HasDefaultValueSql("gen_random_uuid()");
+
+                b.Property<bool>("IsCancelled")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("boolean")
+                    .HasDefaultValue(false);
+
+                b.Property<Guid>("ProductId")
+                    .HasColumnType("uuid");
+
+                b.Property<string>("ProductName")
+                    .IsRequired()
+                    .HasMaxLength(200)
+                    .HasColumnType("character varying(200)");
+
+                b.Property<int>("Quantity")
+                    .HasColumnType("integer");
+
+                b.Property<Guid>("SaleId")
+                    .HasColumnType("uuid");
+
+                b.HasKey("Id");
 
-                    b.HasIndex("SaleId");
-
-                    b.ToTable("SaleItems", (string)null);
-                });
+                b.HasIndex("SaleId");
+
+                b.ToTable("SaleItems", (string)null);
+            });
 
-            modelBuilder.Entity("Ambev.DeveloperEvaluation.Domain.Entities.User", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("gen_random_uuid()");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<string>("Phone")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
-
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Users", (string)null);
-                });
-
-            modelBuilder.Entity("Ambev.DeveloperEvaluation.Domain.Entities.Sale", b =>
-                {
-                    b.OwnsOne("Ambev.DeveloperEvaluation.Domain.ValueObjects.Money", "TotalAmount", b1 =>
-                        {
-                            b1.Property<Guid>("SaleId")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("uuid");
-
-                            b1.Property<decimal>("Amount")
-                                .HasColumnType("numeric(18,2)")
-                                .HasColumnName("TotalAmount");
-
-                            b1.Property<string>("Currency")
-                                .IsRequired()
-                                .HasMaxLength(3)
-                                .HasColumnType("character varying(3)")
-                                .HasColumnName("TotalAmountCurrency");
-
-                            b1.HasKey("SaleId");
-
-                            b1.ToTable("Sales");
-
-                            b1.WithOwner()
-                                .HasForeignKey("SaleId");
-                        });
-
-                    b.OwnsOne("Ambev.DeveloperEvaluation.Domain.ValueObjects.SaleNumber", "SaleNumber", b1 =>
-                        {
-                            b1.Property<Guid>("SaleId")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("uuid");
-
-                            b1.Property<string>("Value")
-                                .IsRequired()
-                                .HasMaxLength(50)
-                                .HasColumnType("character varying(50)")
-                                .HasColumnName("SaleNumber");
-
-                            b1.HasKey("SaleId");
+        modelBuilder.Entity("Ambev.DeveloperEvaluation.Domain.Entities.User", b =>
+            {
+                b.Property<Guid>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasColumnType("uuid")
+                    .HasDefaultValueSql("gen_random_uuid()");
+
+                b.Property<DateTime>("CreatedAt")
+                    .HasColumnType("timestamp with time zone");
+
+                b.Property<string>("Email")
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .HasColumnType("character varying(100)");
+
+                b.Property<string>("Password")
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .HasColumnType("character varying(100)");
+
+                b.Property<string>("Phone")
+                    .IsRequired()
+                    .HasMaxLength(20)
+                    .HasColumnType("character varying(20)");
+
+                b.Property<string>("Role")
+                    .IsRequired()
+                    .HasMaxLength(20)
+                    .HasColumnType("character varying(20)");
+
+                b.Property<string>("Status")
+                    .IsRequired()
+                    .HasMaxLength(20)
+                    .HasColumnType("character varying(20)");
+
+                b.Property<DateTime?>("UpdatedAt")
+                    .HasColumnType("timestamp with time zone");
+
+                b.Property<string>("Username")
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .HasColumnType("character varying(50)");
+
+                b.HasKey("Id");
+
+                b.ToTable("Users", (string)null);
+            });
+
+        modelBuilder.Entity("Ambev.DeveloperEvaluation.Domain.Entities.Sale", b =>
+            {
+                b.OwnsOne("Ambev.DeveloperEvaluation.Domain.ValueObjects.Money", "TotalAmount", b1 =>
+                    {
+                        b1.Property<Guid>("SaleId")
+                            .ValueGeneratedOnAdd()
+                            .HasColumnType("uuid");
+
+                        b1.Property<decimal>("Amount")
+                            .HasColumnType("numeric(18,2)")
+                            .HasColumnName("TotalAmount");
+
+                        b1.Property<string>("Currency")
+                            .IsRequired()
+                            .HasMaxLength(3)
+                            .HasColumnType("character varying(3)")
+                            .HasColumnName("TotalAmountCurrency");
+
+                        b1.HasKey("SaleId");
+
+                        b1.ToTable("Sales");
+
+                        b1.WithOwner()
+                            .HasForeignKey("SaleId");
+                    });
+
+                b.OwnsOne("Ambev.DeveloperEvaluation.Domain.ValueObjects.SaleNumber", "SaleNumber", b1 =>
+                    {
+                        b1.Property<Guid>("SaleId")
+                            .ValueGeneratedOnAdd()
+                            .HasColumnType("uuid");
+
+                        b1.Property<string>("Value")
+                            .IsRequired()
+                            .HasMaxLength(50)
+                            .HasColumnType("character varying(50)")
+                            .HasColumnName("SaleNumber");
+
+                        b1.HasKey("SaleId");
 
-                            b1.ToTable("Sales");
-
-                            b1.WithOwner()
-                                .HasForeignKey("SaleId");
-                        });
-
-                    b.Navigation("SaleNumber")
-                        .IsRequired();
-
-                    b.Navigation("TotalAmount")
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Ambev.DeveloperEvaluation.Domain.Entities.SaleItem", b =>
-                {
-                    b.HasOne("Ambev.DeveloperEvaluation.Domain.Entities.Sale", null)
-                        .WithMany("Items")
-                        .HasForeignKey("SaleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.OwnsOne("Ambev.DeveloperEvaluation.Domain.ValueObjects.Money", "Discount", b1 =>
-                        {
-                            b1.Property<Guid>("SaleItemId")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("uuid");
-
-                            b1.Property<decimal>("Amount")
-                                .HasColumnType("numeric(18,2)")
-                                .HasColumnName("Discount");
-
-                            b1.Property<string>("Currency")
-                                .IsRequired()
-                                .HasMaxLength(3)
-                                .HasColumnType("character varying(3)")
-                                .HasColumnName("DiscountCurrency");
-
-                            b1.HasKey("SaleItemId");
-
-                            b1.ToTable("SaleItems");
-
-                            b1.WithOwner()
-                                .HasForeignKey("SaleItemId");
-                        });
-
-                    b.OwnsOne("Ambev.DeveloperEvaluation.Domain.ValueObjects.Money", "TotalAmount", b1 =>
-                        {
-                            b1.Property<Guid>("SaleItemId")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("uuid");
-
-                            b1.Property<decimal>("Amount")
-                                .HasColumnType("numeric(18,2)")
-                                .HasColumnName("TotalAmount");
-
-                            b1.Property<string>("Currency")
-                                .IsRequired()
-                                .HasMaxLength(3)
-                                .HasColumnType("character varying(3)")
-                                .HasColumnName("TotalAmountCurrency");
-
-                            b1.HasKey("SaleItemId");
-
-                            b1.ToTable("SaleItems");
-
-                            b1.WithOwner()
-                                .HasForeignKey("SaleItemId");
-                        });
-
-                    b.OwnsOne("Ambev.DeveloperEvaluation.Domain.ValueObjects.Money", "UnitPrice", b1 =>
-                        {
-                            b1.Property<Guid>("SaleItemId")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("uuid");
-
-                            b1.Property<decimal>("Amount")
-                                .HasColumnType("numeric(18,2)")
-                                .HasColumnName("UnitPrice");
-
-                            b1.Property<string>("Currency")
-                                .IsRequired()
-                                .HasMaxLength(3)
-                                .HasColumnType("character varying(3)")
-                                .HasColumnName("UnitPriceCurrency");
-
-                            b1.HasKey("SaleItemId");
-
-                            b1.ToTable("SaleItems");
-
-                            b1.WithOwner()
-                                .HasForeignKey("SaleItemId");
-                        });
-
-                    b.Navigation("Discount")
-                        .IsRequired();
-
-                    b.Navigation("TotalAmount")
-                        .IsRequired();
-
-                    b.Navigation("UnitPrice")
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Ambev.DeveloperEvaluation.Domain.Entities.Sale", b =>
-                {
-                    b.Navigation("Items");
-                });
+                        b1.ToTable("Sales");
+
+                        b1.WithOwner()
+                            .HasForeignKey("SaleId");
+                    });
+
+                b.Navigation("SaleNumber")
+                    .IsRequired();
+
+                b.Navigation("TotalAmount")
+                    .IsRequired();
+            });
+
+        modelBuilder.Entity("Ambev.DeveloperEvaluation.Domain.Entities.SaleItem", b =>
+            {
+                b.HasOne("Ambev.DeveloperEvaluation.Domain.Entities.Sale", null)
+                    .WithMany("Items")
+                    .HasForeignKey("SaleId")
+                    .OnDelete(DeleteBehavior.Cascade)
+                    .IsRequired();
+
+                b.OwnsOne("Ambev.DeveloperEvaluation.Domain.ValueObjects.Money", "Discount", b1 =>
+                    {
+                        b1.Property<Guid>("SaleItemId")
+                            .ValueGeneratedOnAdd()
+                            .HasColumnType("uuid");
+
+                        b1.Property<decimal>("Amount")
+                            .HasColumnType("numeric(18,2)")
+                            .HasColumnName("Discount");
+
+                        b1.Property<string>("Currency")
+                            .IsRequired()
+                            .HasMaxLength(3)
+                            .HasColumnType("character varying(3)")
+                            .HasColumnName("DiscountCurrency");
+
+                        b1.HasKey("SaleItemId");
+
+                        b1.ToTable("SaleItems");
+
+                        b1.WithOwner()
+                            .HasForeignKey("SaleItemId");
+                    });
+
+                b.OwnsOne("Ambev.DeveloperEvaluation.Domain.ValueObjects.Money", "TotalAmount", b1 =>
+                    {
+                        b1.Property<Guid>("SaleItemId")
+                            .ValueGeneratedOnAdd()
+                            .HasColumnType("uuid");
+
+                        b1.Property<decimal>("Amount")
+                            .HasColumnType("numeric(18,2)")
+                            .HasColumnName("TotalAmount");
+
+                        b1.Property<string>("Currency")
+                            .IsRequired()
+                            .HasMaxLength(3)
+                            .HasColumnType("character varying(3)")
+                            .HasColumnName("TotalAmountCurrency");
+
+                        b1.HasKey("SaleItemId");
+
+                        b1.ToTable("SaleItems");
+
+                        b1.WithOwner()
+                            .HasForeignKey("SaleItemId");
+                    });
+
+                b.OwnsOne("Ambev.DeveloperEvaluation.Domain.ValueObjects.Money", "UnitPrice", b1 =>
+                    {
+                        b1.Property<Guid>("SaleItemId")
+                            .ValueGeneratedOnAdd()
+                            .HasColumnType("uuid");
+
+                        b1.Property<decimal>("Amount")
+                            .HasColumnType("numeric(18,2)")
+                            .HasColumnName("UnitPrice");
+
+                        b1.Property<string>("Currency")
+                            .IsRequired()
+                            .HasMaxLength(3)
+                            .HasColumnType("character varying(3)")
+                            .HasColumnName("UnitPriceCurrency");
+
+                        b1.HasKey("SaleItemId");
+
+                        b1.ToTable("SaleItems");
+
+                        b1.WithOwner()
+                            .HasForeignKey("SaleItemId");
+                    });
+
+                b.Navigation("Discount")
+                    .IsRequired();
+
+                b.Navigation("TotalAmount")
+                    .IsRequired();
+
+                b.Navigation("UnitPrice")
+                    .IsRequired();
+            });
+
+        modelBuilder.Entity("Ambev.DeveloperEvaluation.Domain.Entities.Sale", b =>
+            {
+                b.Navigation("Items");
+            });
 #pragma warning restore 612, 618
-        }
     }
 }

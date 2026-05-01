@@ -1,13 +1,12 @@
 using FluentValidation;
 
-namespace Ambev.DeveloperEvaluation.Application.Sales.CancelSaleItem
+namespace Ambev.DeveloperEvaluation.Application.Sales.CancelSaleItem;
+
+public class CancelSaleItemCommandValidator : AbstractValidator<CancelSaleItemCommand>
 {
-    public class CancelSaleItemCommandValidator : AbstractValidator<CancelSaleItemCommand>
+    public CancelSaleItemCommandValidator()
     {
-        public CancelSaleItemCommandValidator()
-        {
-            RuleFor(c => c.SaleId).NotEmpty();
-            RuleFor(c => c.ItemId).NotEmpty();
-        }
+        RuleFor(c => c.SaleId).NotEmpty();
+        RuleFor(c => c.ItemId).NotEmpty();
     }
 }

@@ -1,14 +1,14 @@
 using Ambev.DeveloperEvaluation.Domain.Entities;
+using MediatR;
 
-namespace Ambev.DeveloperEvaluation.Domain.Events
+namespace Ambev.DeveloperEvaluation.Domain.Events;
+
+public class SaleCancelledEvent : INotification
 {
-    public class SaleCancelledEvent
-    {
-        public Sale Sale { get; }
+    public Sale Sale { get; }
 
-        public SaleCancelledEvent(Sale sale)
-        {
-            Sale = sale;
-        }
+    public SaleCancelledEvent(Sale sale)
+    {
+        Sale = sale;
     }
 }

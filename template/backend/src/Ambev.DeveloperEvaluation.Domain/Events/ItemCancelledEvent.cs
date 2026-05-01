@@ -1,16 +1,16 @@
 using Ambev.DeveloperEvaluation.Domain.Entities;
+using MediatR;
 
-namespace Ambev.DeveloperEvaluation.Domain.Events
+namespace Ambev.DeveloperEvaluation.Domain.Events;
+
+public class ItemCancelledEvent : INotification
 {
-    public class ItemCancelledEvent
-    {
-        public Sale Sale { get; }
-        public SaleItem CancelledItem { get; }
+    public Sale Sale { get; }
+    public SaleItem CancelledItem { get; }
 
-        public ItemCancelledEvent(Sale sale, SaleItem cancelledItem)
-        {
-            Sale = sale;
-            CancelledItem = cancelledItem;
-        }
+    public ItemCancelledEvent(Sale sale, SaleItem cancelledItem)
+    {
+        Sale = sale;
+        CancelledItem = cancelledItem;
     }
 }

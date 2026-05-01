@@ -2,67 +2,66 @@ using Ambev.DeveloperEvaluation.Domain.Entities;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 
-namespace Ambev.DeveloperEvaluation.ORM.Repositories
+namespace Ambev.DeveloperEvaluation.ORM.Repositories;
+
+public class SaleRepository : ISaleRepository
 {
-    public class SaleRepository : ISaleRepository
+    private readonly DefaultContext _context;
+
+    public SaleRepository(DefaultContext context)
     {
-        private readonly DefaultContext _context;
+        _context = context;
+    }
 
-        public SaleRepository(DefaultContext context)
-        {
-            _context = context;
-        }
+    public async Task<Sale> CreateAsync(Sale sale, CancellationToken cancellationToken = default)
+    {
+        await _context.Sales.AddAsync(sale, cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken);
+        return sale;
+    }
 
-        public async Task<Sale> CreateAsync(Sale sale, CancellationToken cancellationToken = default)
-        {
-            await _context.Sales.AddAsync(sale, cancellationToken);
-            await _context.SaveChangesAsync(cancellationToken);
-            return sale;
-        }
+    public async Task<Sale?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        return await _context.Sales
+            .Include(s => s.Items)
+            .FirstOrDefaultAsync(s => s.Id == id, cancellationToken);
+    }
 
-        public async Task<Sale?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
-        {
-            return await _context.Sales
-                .Include(s => s.Items)
-                .FirstOrDefaultAsync(s => s.Id == id, cancellationToken);
-        }
+    public async Task<(IEnumerable<Sale> Items, int TotalCount)> GetAllAsync(
+        int page, int pageSize, Guid? customerId = null, CancellationToken cancellationToken = default)
+    {
+        var query = _context.Sales
+            .Include(s => s.Items)
+            .OrderByDescending(s => s.SaleDate)
+            .AsQueryable();
 
-        public async Task<(IEnumerable<Sale> Items, int TotalCount)> GetAllAsync(
-            int page, int pageSize, Guid? customerId = null, CancellationToken cancellationToken = default)
-        {
-            var query = _context.Sales
-                .Include(s => s.Items)
-                .OrderByDescending(s => s.SaleDate)
-                .AsQueryable();
+        if (customerId.HasValue)
+            query = query.Where(s => s.CustomerId == customerId.Value);
 
-            if (customerId.HasValue)
-                query = query.Where(s => s.CustomerId == customerId.Value);
+        var totalCount = await query.CountAsync(cancellationToken);
+        var items = await query
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken);
 
-            var totalCount = await query.CountAsync(cancellationToken);
-            var items = await query
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync(cancellationToken);
+        return (items, totalCount);
+    }
 
-            return (items, totalCount);
-        }
+    public async Task<Sale> UpdateAsync(Sale sale, CancellationToken cancellationToken = default)
+    {
+        _context.Sales.Update(sale);
+        await _context.SaveChangesAsync(cancellationToken);
+        return sale;
+    }
 
-        public async Task<Sale> UpdateAsync(Sale sale, CancellationToken cancellationToken = default)
-        {
-            _context.Sales.Update(sale);
-            await _context.SaveChangesAsync(cancellationToken);
-            return sale;
-        }
+    public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        var sale = await GetByIdAsync(id, cancellationToken);
+        if (sale is null)
+            return false;
 
-        public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
-        {
-            var sale = await GetByIdAsync(id, cancellationToken);
-            if (sale is null)
-                return false;
-
-            _context.Sales.Remove(sale);
-            await _context.SaveChangesAsync(cancellationToken);
-            return true;
-        }
+        _context.Sales.Remove(sale);
+        await _context.SaveChangesAsync(cancellationToken);
+        return true;
     }
 }
