@@ -32,6 +32,23 @@ public interface IUserRepository
     Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Retrieves a paginated list of users
+    /// </summary>
+    /// <param name="page">The page number (1-based)</param>
+    /// <param name="pageSize">The number of items per page</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>A tuple with the users and total count</returns>
+    Task<(IEnumerable<User> Items, int TotalCount)> GetAllAsync(int page, int pageSize, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Updates an existing user in the repository
+    /// </summary>
+    /// <param name="user">The user with updated data</param>
+    /// <param name="cancellationToken">Cancellation token</param>
+    /// <returns>The updated user</returns>
+    Task<User> UpdateAsync(User user, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Deletes a user from the repository
     /// </summary>
     /// <param name="id">The unique identifier of the user to delete</param>

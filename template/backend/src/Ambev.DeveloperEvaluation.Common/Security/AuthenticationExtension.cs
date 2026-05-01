@@ -1,8 +1,8 @@
+using Ambev.DeveloperEvaluation.Common.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using System;
 using System.Text;
 
 namespace Ambev.DeveloperEvaluation.Common.Security
@@ -11,12 +11,15 @@ namespace Ambev.DeveloperEvaluation.Common.Security
     {
         public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
+            var jwtSettings = configuration.GetSection(JwtSettings.SectionName).Get<JwtSettings>()
+                ?? throw new InvalidOperationException("JWT settings section is not configured.");
+
+            ArgumentException.ThrowIfNullOrWhiteSpace(jwtSettings.SecretKey);
+
+            services.Configure<JwtSettings>(configuration.GetSection(JwtSettings.SectionName));
             services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 
-            var secretKey = configuration["Jwt:SecretKey"]?.ToString();
-            ArgumentException.ThrowIfNullOrWhiteSpace(secretKey);
-
-            var key = Encoding.ASCII.GetBytes(secretKey);
+            var key = Encoding.ASCII.GetBytes(jwtSettings.SecretKey);
 
             services.AddAuthentication(x =>
             {
@@ -36,8 +39,6 @@ namespace Ambev.DeveloperEvaluation.Common.Security
                     ClockSkew = TimeSpan.Zero
                 };
             });
-
-            services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 
             return services;
         }
