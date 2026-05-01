@@ -21,7 +21,7 @@ namespace Ambev.DeveloperEvaluation.Application.Auth.AuthenticateUser
             _jwtTokenGenerator = jwtTokenGenerator;
         }
 
-        public async Task<AuthenticateUserResult> Handle(AuthenticateUserCommand request, CancellationToken cancellationToken)
+        public async Task<AuthenticateUserResult> Handle(AuthenticateUserCommand request, CancellationToken cancellationToken = default)
         {
             var user = await _userRepository.GetByEmailAsync(request.Email, cancellationToken);
 
@@ -40,6 +40,7 @@ namespace Ambev.DeveloperEvaluation.Application.Auth.AuthenticateUser
 
             return new AuthenticateUserResult
             {
+                Id = user.Id,
                 Token = token,
                 Email = user.Email,
                 Name = user.Username,
