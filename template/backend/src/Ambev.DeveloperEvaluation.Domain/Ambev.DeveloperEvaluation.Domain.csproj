@@ -10,11 +10,7 @@
     <Folder Include="Exceptions\" />
     <Folder Include="Repositories\" />
     <Folder Include="Events\" />
-    <Folder Include="ValueObjects\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="FluentValidation" Version="11.10.0" />
+    <Folder Include="Specifications\Sales\" />
   </ItemGroup>
 
   <ItemGroup>
