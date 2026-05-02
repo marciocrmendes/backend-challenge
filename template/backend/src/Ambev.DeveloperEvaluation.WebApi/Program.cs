@@ -98,7 +98,7 @@ public class Program
                 db.Database.Migrate();
             }
 
-            app.UseMiddleware<ValidationExceptionMiddleware>();
+            app.UseMiddleware<GlobalExceptionMiddleware>();
 
             if (app.Environment.IsDevelopment())
             {

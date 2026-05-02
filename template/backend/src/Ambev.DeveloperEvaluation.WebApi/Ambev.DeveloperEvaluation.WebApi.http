@@ -252,13 +252,23 @@ Authorization: Bearer {{token_admin}}
 
 ###
 
-### 4.7 Atualizar Venda
+### ============================================================
+### 4.7-4.11 ATUALIZAÇÃO DE VENDA — testes de desconto e itens
+###
+### Referência de cálculo (sale_id_1 criada com qty=3, unitPrice=4.50):
+###   qty < 4  → sem desconto  → total = qty × unitPrice
+###   4≤qty≤9  → 10% desconto → total = qty × unitPrice × 0.90
+###   10≤qty≤20→ 20% desconto → total = qty × unitPrice × 0.80
+### ============================================================
+
+### 4.7 Atualizar qty 3→5 (sem desconto → 10% desconto)
+### Esperado: discount=2.25, totalAmount=20.25  (5×4.50×0.90)
 PUT {{baseUrl}}/api/sales/{{sale_id_1}}
 Content-Type: application/json
 Authorization: Bearer {{token_manager}}
 
 {
-  "saleNumber": "UPDATED-001",
+  "saleNumber": "SALE-UPDATE-10PCT",
   "saleDate": "2026-05-01T12:00:00Z",
   "customerId": "{{customer_id}}",
   "customerName": "Customer User",
@@ -268,7 +278,7 @@ Authorization: Bearer {{token_manager}}
     {
       "productId": "11111111-1111-1111-1111-111111111111",
       "productName": "Cerveja Brahma 350ml",
-      "quantity": 8,
+      "quantity": 5,
       "unitPrice": 4.50,
       "currency": "BRL"
     }
@@ -277,13 +287,138 @@ Authorization: Bearer {{token_manager}}
 
 ###
 
-### 4.8 Cancelar item da Venda 3
-### (cole o ID do item retornado na resposta 4.3 na variável @sale_item_id)
+### 4.8 Atualizar qty 5→10 (10% → 20% desconto)
+### Esperado: discount=9.00, totalAmount=36.00  (10×4.50×0.80)
+PUT {{baseUrl}}/api/sales/{{sale_id_1}}
+Content-Type: application/json
+Authorization: Bearer {{token_manager}}
+
+{
+  "saleNumber": "SALE-UPDATE-20PCT",
+  "saleDate": "2026-05-01T12:00:00Z",
+  "customerId": "{{customer_id}}",
+  "customerName": "Customer User",
+  "branchId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "branchName": "Filial São Paulo",
+  "items": [
+    {
+      "productId": "11111111-1111-1111-1111-111111111111",
+      "productName": "Cerveja Brahma 350ml",
+      "quantity": 10,
+      "unitPrice": 4.50,
+      "currency": "BRL"
+    }
+  ]
+}
+
+###
+
+### 4.9 Adicionar novo item sem ID (item existente mantido + novo adicionado)
+### Esperado: 2 itens ativos, totalAmount = 36.00 + (3×6.00) = 54.00
+PUT {{baseUrl}}/api/sales/{{sale_id_1}}
+Content-Type: application/json
+Authorization: Bearer {{token_manager}}
+
+{
+  "saleNumber": "SALE-UPDATE-ADD-ITEM",
+  "saleDate": "2026-05-01T12:00:00Z",
+  "customerId": "{{customer_id}}",
+  "customerName": "Customer User",
+  "branchId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "branchName": "Filial São Paulo",
+  "items": [
+    {
+      "id": "{{sale_item_id_1}}",
+      "productId": "11111111-1111-1111-1111-111111111111",
+      "productName": "Cerveja Brahma 350ml",
+      "quantity": 10,
+      "unitPrice": 4.50,
+      "currency": "BRL"
+    },
+    {
+      "productId": "66666666-6666-6666-6666-666666666666",
+      "productName": "Refrigerante Guaraná 350ml",
+      "quantity": 3,
+      "unitPrice": 6.00,
+      "currency": "BRL"
+    }
+  ]
+}
+
+###
+
+### 4.10 Remover item existente (omitir do request → item cancelado)
+### Esperado: apenas 1 item ativo (o novo), totalAmount = 18.00 (3×6.00)
+### Cole o ID do item "Refrigerante Guaraná" adicionado na 4.9 em @sale_item_id_2
+@sale_item_id_1 = COLE_AQUI_ID_ITEM_BRAHMA
+@sale_item_id_2 = COLE_AQUI_ID_ITEM_GUARANA
+
+PUT {{baseUrl}}/api/sales/{{sale_id_1}}
+Content-Type: application/json
+Authorization: Bearer {{token_manager}}
+
+{
+  "saleNumber": "SALE-UPDATE-REMOVE-ITEM",
+  "saleDate": "2026-05-01T12:00:00Z",
+  "customerId": "{{customer_id}}",
+  "customerName": "Customer User",
+  "branchId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "branchName": "Filial São Paulo",
+  "items": [
+    {
+      "id": "{{sale_item_id_2}}",
+      "productId": "66666666-6666-6666-6666-666666666666",
+      "productName": "Refrigerante Guaraná 350ml",
+      "quantity": 3,
+      "unitPrice": 6.00,
+      "currency": "BRL"
+    }
+  ]
+}
+
+###
+
+### 4.11 Tentativa de atualizar venda cancelada (deve retornar 400)
+### Cancela a venda_2 primeiro e tenta atualizar
+DELETE {{baseUrl}}/api/sales/{{sale_id_2}}
+Authorization: Bearer {{token_admin}}
+
+###
+
+### 4.12 Atualizar venda cancelada — erro esperado (400)
+PUT {{baseUrl}}/api/sales/{{sale_id_2}}
+Content-Type: application/json
+Authorization: Bearer {{token_manager}}
+
+{
+  "saleNumber": "SHOULD-FAIL",
+  "saleDate": "2026-05-01T12:00:00Z",
+  "customerId": "{{customer_id}}",
+  "customerName": "Customer User",
+  "branchId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+  "branchName": "Filial São Paulo",
+  "items": [
+    {
+      "productId": "22222222-2222-2222-2222-222222222222",
+      "productName": "Cerveja Skol 350ml",
+      "quantity": 2,
+      "unitPrice": 4.00,
+      "currency": "BRL"
+    }
+  ]
+}
+
+###
+
+### 4.13 Cancelar item individual da Venda 3
+### Cole em @sale_item_id o ID de um item retornado na criação 4.3
+@sale_item_id = COLE_AQUI_ID_ITEM_DA_VENDA_3
+
 PATCH {{baseUrl}}/api/sales/{{sale_id_3}}/items/{{sale_item_id}}/cancel
 Authorization: Bearer {{token_manager}}
 
 ###
 
-### 4.9 Cancelar Venda 2
-DELETE {{baseUrl}}/api/sales/{{sale_id_2}}
-Authorization: Bearer {{token_admin}}
+### 4.14 Verificar venda 1 após todas as atualizações
+GET {{baseUrl}}/api/sales/{{sale_id_1}}
+Authorization: Bearer {{token_manager}}
